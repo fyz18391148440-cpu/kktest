@@ -34,17 +34,7 @@
             <img :src="block.imageUrl" class="bubble-image max-w-[220px] rounded-[12px]">
             <div v-if="block.text && block.text !== '[图片]'" class="bubble-caption mt-2 text-[15px]">{{ block.text }}</div>
           </template>
-          
-          <!-- 普通文字 / 双语 -->
-          <template v-else>
-            <template v-if="parsed.english || parsed.chinese">
-              <div v-if="parsed.english" class="bubble-text">{{ parsed.english }}</div>
-              <div v-if="parsed.chinese" class="bubble-text" style="margin-top: 6px; opacity: 0.75; font-size: 0.92em;">
-                {{ parsed.chinese }}
-              </div>
-            </template>
-            <span v-else class="bubble-text" v-html="renderText(block.text)"></span>
-          </template>
+          <span v-else class="bubble-text" v-html="renderText(block.text)"></span>
         </div>
       </div>
       <div v-if="block.fromOffline" class="text-[10px] text-[var(--text-secondary)] opacity-40 mt-0.5" :class="block.isUser ? 'mr-2' : 'ml-2'">线下</div>
@@ -105,26 +95,6 @@ function renderText(text) {
   if (!text || typeof text !== 'string') return ''
   return escapeHtml(text)
 }
-
-// 解析 [English] 和 [中文翻译]
-const parsed = computed(() => {
-  const text = props.block?.text || ''
-  if (!text || typeof text !== 'string') {
-    return { english: '', chinese: '' }
-  }
-
-  const englishMatch = text.match(/\[English\]\s*([\s\S]*?)(?=\[中文翻译\]|$)/i)
-  const chineseMatch = text.match(/\[中文翻译\]\s*([\s\S]*?)$/i)
-
-  const english = englishMatch ? englishMatch[1].trim() : ''
-  const chinese = chineseMatch ? chineseMatch[1].trim() : ''
-
-  if (!english && !chinese) {
-    return { english: '', chinese: '' }
-  }
-
-  return { english, chinese }
-})
 </script>
 
 <style scoped>
